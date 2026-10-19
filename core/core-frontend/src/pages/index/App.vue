@@ -1,0 +1,28 @@
+<script setup lang="ts">
+import { ref, defineAsyncComponent, nextTick } from 'vue'
+import { useEmitt } from '@/hooks/web/useEmitt'
+import configGlobal from '@/components/config-global/src/ConfigGlobal.vue'
+import { useRoute } from 'vue-router_2'
+const route = useRoute()
+const exportExcelRef = ref()
+const exportExcelRefShow = ref(false)
+const ExportExcelDraw = defineAsyncComponent(
+  () => import('@/views/visualized/data/dataset/ExportExcelDraw.vue')
+)
+const exportExcelCenter = params => {
+  exportExcelRefShow.value = true
+  nextTick(() => {
+    exportExcelRef.value.init(params)
+  })
+}
+useEmitt({
+  name: 'data-export-center',
+  callback: exportExcelCenter
+})
+</script>
+<template>
+  <config-global>
+    <router-view :key="route.path" />
+    <ExportExcelDraw ref="exportExcelRef"></ExportExcelDraw>
+  </config-global>
+</template>
